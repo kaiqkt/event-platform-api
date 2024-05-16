@@ -1,1 +1,1 @@
-# template-spring
+# event-platform-api

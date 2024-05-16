@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.2.5'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'org.openapi.generator' version '7.5.0'
+    id 'org.flywaydb.flyway' version "10.12.0"
 }
 
 group = 'com.kaiqkt'
@@ -10,12 +11,6 @@ version = '0.0.1'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
-}
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
 }
 
 springBoot {
@@ -40,14 +35,18 @@ openApiGenerate {
     generatorName.set("spring")
     inputSpec.set("$rootDir/src/main/resources/static/api-docs.yml")
     outputDir.set("$buildDir/generated")
-    apiPackage.set("com.kaiqkt.template.generated.application.controllers")
-    modelPackage.set("com.kaiqkt.template.generated.application.dto")
+    apiPackage.set("com.kaiqkt.eventplatform.generated.application.controllers")
+    modelPackage.set("com.kaiqkt.eventplatform.generated.application.dto")
+    skipValidateSpec.set(true)
     configOptions.set([
-            dateLibrary            : "java8",
-            hideGenerationTimestamp: "true",
-            useBeanValidation      : "true",
-            interfaceOnly          : "true",
-            enumPropertyNaming     : "UPPERCASE",
+            dateLibrary                   : "java8",
+            interfaceOnly                 : "true",
+            useBeanValidation             : "true",
+            performBeanValidationc        : "true",
+            enumPropertyNaming            : "UPPERCASE",
+            useSpringBoot3                : "true",
+            unhandledException            : "true",
+            additionalModelTypeAnnotations: '@lombok.Data @lombok.NoArgsConstructor @lombok.AllArgsConstructor @lombok.Builder',
     ])
 }
 
@@ -55,21 +54,30 @@ dependencies {
     //spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compileOnly 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    //metrics
 
     //tools
     implementation 'com.kaiqkt:springtools-security:1.0.0'
     implementation 'com.kaiqkt:springtools-healthcheck:1.0.0'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    implementation 'io.azam.ulidj:ulidj:1.0.1'
+    implementation 'com.networknt:json-schema-validator:1.0.72'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3'
 
     //code generator
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
     implementation 'io.swagger.core.v3:swagger-annotations:2.2.20'
-    implementation 'jakarta.validation:jakarta.validation-api:2.0.2'
-    implementation 'javax.annotation:javax.annotation-api:1.3.2'
     implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
-    compileOnly 'javax.servlet:servlet-api:2.5'
 
     //database
+    implementation 'org.postgresql:postgresql:42.7.3'
+    implementation 'org.flywaydb:flyway-maven-plugin:10.12.0'
 
     //aws
 }

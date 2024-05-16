@@ -2,38 +2,334 @@
 
 openapi: 3.0.0
 info:
-  title: "template"
+  title: "event-platform-api"
   version: 1.0.0
   description: >-
-    template api.
+    event platform api.
   license:
     name: Apache-2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
 
 paths:
-  /hello:
-    get:
+  /producer:
+    post:
       tags:
-        - Hello World
-      description: Hello World
-      operationId: helloWorld
+        - producer
+      description: Create event producer
+      operationId: create
+      security:
+        - JwtToken: []
+      requestBody:
+        required: true
+        content:
+          application/vnd.event_create_producer_v1+json:
+            schema:
+              $ref: '#/components/schemas/ProducerRequestV1'
       responses:
         200:
-          description: Hello World
+          description: Producer created
           content:
-            application/vnd.kaiqkt_hello_world_v1+json:
+            application/vnd.event_create_producer_v1+json:
               schema:
-                $ref: '#/components/schemas/HelloWorld'
+                $ref: '#/components/schemas/ProducerResponseV1'
+  /producer/{service}/{action}:
+    get:
+      tags:
+        - producer
+      description: Get producer by service, action and version
+      operationId: findByServiceAndAction
+      security:
+        - JwtToken: []
+      parameters:
+        - in: path
+          name: service
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: action
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Producer found
+          content:
+            application/vnd.producer+json:
+              schema:
+                $ref: '#/components/schemas/ProducerResponseV1'
+        404:
+          description: Producer not found
+          content:
+            application/vnd.producer+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorV1'
+  /producer/{service}:
+    get:
+      tags:
+        - producer
+      description: Get producer by service
+      operationId: findByService
+      security:
+        - JwtToken: []
+      parameters:
+        - in: path
+          name: service
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Producer found
+          content:
+            application/vnd.event_producer_v1+json:
+              schema:
+                $ref: '#/components/schemas/ProducerResponseV1'
+        404:
+          description: Producer not found
+          content:
+            application/vnd.event_producer_v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorV1'
+  /producer/{service}/{action}/{version}:
+    delete:
+      tags:
+        - producer
+      description: Delete a producer version
+      operationId: deleteVersion
+      security:
+        - JwtToken: []
+      parameters:
+        - in: path
+          name: service
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: action
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: version
+          schema:
+            type: integer
+          required: true
+      responses:
+        204:
+          description: Producer version deleted
+  /event:
+    post:
+      tags:
+        - event
+      description: Send event
+      operationId: send
+      security:
+        - AccessToken: []
+      requestBody:
+        required: true
+        content:
+          application/vnd.event_create_event_v1+json:
+            schema:
+              $ref: '#/components/schemas/EventV1'
+      responses:
+        202:
+          description: Event sent
+        404:
+          description: Producer not found
+          content:
+            application/vnd.event_create_event_v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorV1'
+  /consumer/{service}/{action}/{version}:
+    post:
+      tags:
+        - consumer
+      description: Create event consumer
+      operationId: create
+      security:
+        - JwtToken: []
+      parameters:
+        - in: path
+          name: service
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: action
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: version
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/vnd.event_create_consumer_v1+json:
+            schema:
+              $ref: '#/components/schemas/ConsumerRequestV1'
+      responses:
+        200:
+          description: Consumer created
+          content:
+            application/vnd.event_create_consumer_v1+json:
+              schema:
+                $ref: '#/components/schemas/ConsumerResponseV1'
+  /consumer/{service}:
+    get:
+      tags:
+        - consumer
+      description: Get consumer by service
+      operationId: findByService
+      security:
+        - JwtToken: []
+      parameters:
+        - in: path
+          name: service
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Consumer found
+          content:
+            application/vnd.event_consumer_v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConsumerResponseV1'
+        404:
+          description: Consumer not found
+          content:
+            application/vnd.event_consumer_v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorV1'
 
 components:
   schemas:
-    HelloWorld:
+    ProducerRequestV1:
       type: object
       properties:
-        message:
+        service:
           type: string
+          x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
+        action:
+          type: string
+          x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
+        version:
+          allOf:
+            - $ref: '#/components/schemas/VersionV1'
+          x-field-extra-annotation: '@NotNull(message = "should not be null")'
       required:
-        - message
+        - service
+        - action
+        - version
+
+    ConsumerRequestV1:
+      type: object
+      properties:
+        service:
+          type: string
+          x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
+        url:
+          type: string
+          x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
+        content_type:
+          type: string
+          x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
+      required:
+        - service
+        - url
+        - content_type
+
+    ConsumerResponseV1:
+      type: object
+      properties:
+        id:
+          type: string
+        service:
+          type: string
+        url:
+          type: string
+        content_type:
+          type: string
+        version:
+          $ref: '#/components/schemas/VersionV1'
+      required:
+        - id
+        - service
+        - url
+        - version
+        - content_type
+
+    ProducerResponseV1:
+      type: object
+      properties:
+        service:
+          type: string
+        action:
+          type: string
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/VersionV1'
+      required:
+        - service
+        - action
+        - version
+        - schema
+
+    EventV1:
+      type: object
+      properties:
+        id:
+          type: string
+        service:
+          type: string
+          x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
+        action:
+          type: string
+          x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
+        version:
+          type: integer
+          x-field-extra-annotation:
+            '@Min(value = 1, message = "number must be greater than zero")'
+        data:
+          allOf:
+            - type: object
+              additionalProperties:
+                type: object
+              x-field-extra-annotation:
+                '@NotNull(message = "should not be null")'
+      required:
+        - service
+        - action
+        - version
+
+    VersionV1:
+      type: object
+      properties:
+        value:
+          type: integer
+          x-field-extra-annotation:
+            '@Min(value = 1, message = "number must be greater than zero")'
+        schema:
+          type: string
+          x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
+      required:
+        - value
+        - schema
 
     ErrorV1:
       type: object
@@ -41,7 +337,7 @@ components:
         type:
           type: string
         message:
-          type: string
+          type: object
       required:
         - type
         - message

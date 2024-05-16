@@ -1,6 +1,7 @@
 ---
 spring:
   application:
-    name: template-api
+    name: event-platform-api
   profiles:
-    active: ${PROFILE}
+    active: local
+#    active: ${PROFILE}

@@ -2,8 +2,8 @@ FROM openjdk:17
 
 MAINTAINER https://github.com/kaiqkt
 
-COPY ./build/libs/*.jar template-api.jar
+COPY ./build/libs/*.jar event-platform-api.jar
 
-ENTRYPOINT ["java","-jar","template-api.jar"]
+ENTRYPOINT ["java","-jar","event-platform-api.jar"]
 
 ENV PROFILE local

@@ -28,7 +28,7 @@ public class Producer implements Serializable {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     @OneToMany(mappedBy = "producer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Version> versions = Collections.emptyList();
+    private List<Version> versions;
 
     public Producer(String service, String action, Version version) throws DomainException {
         this.id = ULID.random();

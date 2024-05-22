@@ -24,7 +24,7 @@ public class Version implements Serializable {
     @JoinColumn(name = "producer_id")
     private Producer producer;
     @OneToMany(mappedBy = "version", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Consumer> consumers = Collections.emptyList();
+    private List<Consumer> consumers;
     private LocalDateTime createdAt;
 
     public Version(Integer value, String schema) {

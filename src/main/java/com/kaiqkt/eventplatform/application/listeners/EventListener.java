@@ -24,7 +24,7 @@ public class EventListener {
     }
 
     @KafkaListener(topics = "event_platform", groupId = "ep-1")
-    public void listenGroupFoo(ConsumerRecord<String, String> message, Acknowledgment ack) {
+    public void listener(ConsumerRecord<String, String> message, Acknowledgment ack) {
         try {
             Event event = mapper.readValue(message.value(), Event.class);
             eventService.consume(event);

@@ -3,6 +3,7 @@ package com.kaiqkt.eventplatform.domain.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kaiqkt.eventplatform.application.config.Metrics;
 import com.kaiqkt.eventplatform.domain.exception.DomainException;
 import com.kaiqkt.eventplatform.domain.exception.ErrorType;
 import com.kaiqkt.eventplatform.domain.gateways.MessagingService;
@@ -29,15 +30,17 @@ public class EventService {
     private final MessagingService messagingService;
     private final RequestService requestService;
     private final ObjectMapper mapper;
+    private final Metrics metrics;
 
 
     @Autowired
-    public EventService(ProducerService producerService, ConsumerService consumerService, MessagingService messagingService, RequestService requestService, ObjectMapper mapper) {
+    public EventService(ProducerService producerService, ConsumerService consumerService, MessagingService messagingService, RequestService requestService, ObjectMapper mapper, Metrics metrics) {
         this.producerService = producerService;
         this.consumerService = consumerService;
         this.messagingService = messagingService;
         this.requestService = requestService;
         this.mapper = mapper;
+        this.metrics = metrics;
     }
 
     public void send(Event event) throws Exception {
@@ -51,16 +54,19 @@ public class EventService {
         messagingService.send(event);
 
         log.info("Event for service {} sent successfully", event.getService());
+        metrics.increment("event", "action", "sent", "service", event.getService());
     }
 
-    public void consume(Event event) {
+    public void consume(Event event) throws Exception {
         consumerService.find(event.getService(), event.getAction(), event.getVersion())
                 .forEach(consumer -> CompletableFuture.runAsync(() -> {
                     try {
                         requestService.make(consumer.getUrl(), consumer.getContentType(), event.getData());
                         log.info("Event {} consumed by service {} successfully", event.getId(), consumer.getService());
+                        metrics.increment("event", "action", "consumed", "service", consumer.getService());
                     } catch (Exception e) {
-                        log.error("Fail to make request for event: {} on consumer {}, error: {}", event, consumer.getService(), e.toString());
+                        log.info("Service {} failed to consume event: {} by error: {}", consumer.getService(), event, e.toString());
+                        metrics.increment("event", "action", "failed", "service", consumer.getService());
                     }
                 }));
     }

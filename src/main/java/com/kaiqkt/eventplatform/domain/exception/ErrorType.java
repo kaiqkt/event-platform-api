@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ErrorType {
     PRODUCER_NOT_FOUND("Producer not found", 404),
     CONSUMER_NOT_FOUND("Consumer not found", 404),
+    CONSUMER_ALREADY_EXISTS("Consumer already exists", 409),
     VERSION_NOT_FOUND("Version not found", 404),
     INVALID_EVENT("Event data is not matching with the required data", 400),
     VERSION_SHOULD_BE_SEQUENTIAL("Version sent does not follow the sequence of other versions or the start version should start with value 1", 400);

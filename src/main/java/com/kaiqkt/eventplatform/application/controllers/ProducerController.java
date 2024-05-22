@@ -26,7 +26,7 @@ public class ProducerController implements ProducerApi {
     //role de admin
     @Override
     public ResponseEntity<ProducerResponseV1> create(ProducerRequestV1 producerRequestV1) throws Exception {
-        Producer producer = producerService.create(ProducerRequest.toDomain(producerRequestV1));
+        Producer producer = producerService.upsert(ProducerRequest.toDomain(producerRequestV1));
         return ResponseEntity.ok(ProducerResponse.toV1(producer));
     }
 

@@ -282,6 +282,7 @@ components:
           type: string
         versions:
           type: array
+          x-field-extra-annotation: '@lombok.Builder.Default'
           items:
             $ref: '#/components/schemas/VersionV1'
       required:

@@ -1,6 +1,8 @@
 package com.kaiqkt.eventplatform.domain.repositories;
 
 import com.kaiqkt.eventplatform.domain.models.Producer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,5 +17,6 @@ public interface ProducerRepository extends JpaRepository<Producer, String> {
 
     Optional<Producer> findByServiceAndAction(String service, String action);
 
-    Optional<Producer> findByService(String service);
+    @Query("SELECT p FROM Producer p WHERE (:service IS NULL OR p.service = :service) AND (:action IS NULL OR p.action = :action)")
+    Page<Producer> findAll(String service, String action, Pageable pageable);
 }

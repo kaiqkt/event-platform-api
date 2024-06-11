@@ -9,11 +9,13 @@ import java.util.Optional;
 public class EventRequest {
 
     public static Event toDomain(EventV1 request) {
-        return Event.builder()
-                .id(Optional.ofNullable(request.getId()).orElse(ULID.random()))
-                .action(request.getAction())
-                .service(request.getService())
-                .data(request.getData())
-                .version(request.getVersion()).build();
+        Event event = new Event();
+        event.setId(Optional.ofNullable(request.getId()).orElse(ULID.random()));
+        event.setAction(request.getAction());
+        event.setService(request.getService());
+        event.setData(request.getData());
+        event.setVersion(request.getVersion());
+
+        return event;
     }
 }

@@ -1,34 +1,33 @@
 package com.kaiqkt.eventplatform.resources.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kaiqkt.eventplatform.application.config.ObjectMapperConfig;
 import com.kaiqkt.eventplatform.domain.gateways.RequestService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
-@Slf4j
 @Component
 public class RequestServiceImpl implements RequestService {
 
-    private final ObjectMapper mapper;
-
-    @Autowired
-    public RequestServiceImpl(ObjectMapper mapper) {
-        this.mapper = mapper;
-    }
+    private final ObjectMapper mapper = ObjectMapperConfig.mapper();
+    private static final Logger log = LoggerFactory.getLogger(RequestServiceImpl.class);
 
     @Override
-    public void make(String url, String contentType, Map<String, Object> data) throws Exception {
-        RestClient restClient = RestClient.create(url);
+    public void request(String url, String contentType, Map<String, Object> data) throws Exception {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
 
-        restClient.post()
-                .contentType(MediaType.parseMediaType(contentType))
-                .body(mapper.writeValueAsString(data))
-                .retrieve()
-                .toBodilessEntity();
+        headers.setContentType(MediaType.parseMediaType(contentType));
+        HttpEntity<String> entity = new HttpEntity<>(mapper.writeValueAsString(data), headers);
+
+        restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
     }
 }

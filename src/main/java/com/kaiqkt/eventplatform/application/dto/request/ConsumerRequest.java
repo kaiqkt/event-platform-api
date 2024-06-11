@@ -5,6 +5,10 @@ import com.kaiqkt.eventplatform.generated.application.dto.ConsumerRequestV1;
 
 public class ConsumerRequest {
     public static Consumer toDomain(ConsumerRequestV1 requestV1) {
-        return new Consumer(requestV1.getService(), requestV1.getUrl(), requestV1.getContentType());
+        Consumer consumer = new Consumer();
+        consumer.setService(requestV1.getService());
+        consumer.setUrl(requestV1.getUrl());
+        consumer.setContentType(requestV1.getContentType());
+        return consumer;
     }
 }

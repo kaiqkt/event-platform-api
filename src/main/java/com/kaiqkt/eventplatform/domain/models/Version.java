@@ -1,37 +1,67 @@
 package com.kaiqkt.eventplatform.domain.models;
 
 import io.azam.ulidj.ULID;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Version implements Serializable {
+public class Version {
     @Id
     private String id;
     private Integer value;
     private String schema;
-    @ManyToOne(fetch = FetchType.LAZY)
+    private LocalDateTime createdAt;
+    @ManyToOne
     @JoinColumn(name = "producer_id")
     private Producer producer;
-    @OneToMany(mappedBy = "version", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Consumer> consumers;
-    private LocalDateTime createdAt;
 
-    public Version(Integer value, String schema) {
-        this.id = ULID.random();
+   public Version(){
+       this.id = ULID.random();
+       this.createdAt = LocalDateTime.now();
+   }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
         this.value = value;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
         this.schema = schema;
-        this.createdAt = LocalDateTime.now();
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Producer getProducer() {
+        return producer;
+    }
+
+    public void setProducer(Producer producer) {
+        this.producer = producer;
     }
 
     @Override

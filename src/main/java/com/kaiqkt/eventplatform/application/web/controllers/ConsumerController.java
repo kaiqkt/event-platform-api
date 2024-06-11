@@ -1,17 +1,19 @@
-package com.kaiqkt.eventplatform.application.controllers;
+package com.kaiqkt.eventplatform.application.web.controllers;
 
 import com.kaiqkt.eventplatform.application.dto.request.ConsumerRequest;
 import com.kaiqkt.eventplatform.application.dto.response.ConsumerResponse;
+import com.kaiqkt.eventplatform.application.dto.response.PageResponse;
 import com.kaiqkt.eventplatform.domain.models.Consumer;
+import com.kaiqkt.eventplatform.application.dto.request.PageRequest;
 import com.kaiqkt.eventplatform.domain.services.ConsumerService;
 import com.kaiqkt.eventplatform.generated.application.controllers.ConsumerApi;
 import com.kaiqkt.eventplatform.generated.application.dto.ConsumerRequestV1;
 import com.kaiqkt.eventplatform.generated.application.dto.ConsumerResponseV1;
+import com.kaiqkt.eventplatform.generated.application.dto.PageResponseV1;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 public class ConsumerController implements ConsumerApi {
@@ -27,12 +29,13 @@ public class ConsumerController implements ConsumerApi {
     @Override
     public ResponseEntity<ConsumerResponseV1> create(String service, String action, Integer version, ConsumerRequestV1 consumerRequestV1) throws Exception {
         Consumer consumer = consumerService.create(ConsumerRequest.toDomain(consumerRequestV1), service, action, version);
-        return ResponseEntity.ok(ConsumerResponse.toResponse(consumer));
+        return ResponseEntity.ok(ConsumerResponse.toV1(consumer));
     }
 
+    //admin
     @Override
-    public ResponseEntity<List<ConsumerResponseV1>> findByService(String service) throws Exception {
-        List<ConsumerResponseV1> response = consumerService.findByService(service).stream().map(ConsumerResponse::toResponse).toList();
-        return ResponseEntity.ok(response);
+    public ResponseEntity<PageResponseV1> findAll(String service, Integer page, Integer size, String order, String sortBy) throws Exception {
+        Page<Consumer> response = consumerService.findAll(service, PageRequest.of(page, size, order, sortBy));
+        return ResponseEntity.ok(PageResponse.toResponse(response, ConsumerResponse::toV1));
     }
 }

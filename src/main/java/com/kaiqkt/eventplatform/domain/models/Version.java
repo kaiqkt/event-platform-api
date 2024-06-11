@@ -19,10 +19,10 @@ public class Version {
     @JoinColumn(name = "producer_id")
     private Producer producer;
 
-   public Version(){
-       this.id = ULID.random();
-       this.createdAt = LocalDateTime.now();
-   }
+    public Version() {
+        this.id = ULID.random();
+        this.createdAt = LocalDateTime.now();
+    }
 
     public String getId() {
         return id;

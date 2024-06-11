@@ -28,7 +28,11 @@ public class ProducerController implements ProducerApi {
     //admin
     @Override
     public ResponseEntity<ProducerResponseV1> create(ProducerRequestV1 requestV1) throws Exception {
-        Producer producer = producerService.createOrUpdate(requestV1.getService(), requestV1.getAction(), VersionDto.toDomain(requestV1.getVersion()));
+        Producer producer = producerService.createOrUpdate(
+                requestV1.getService(),
+                requestV1.getAction(),
+                VersionDto.toDomain(requestV1.getVersion())
+        );
         return ResponseEntity.ok(ProducerResponse.toV1(producer));
     }
 
@@ -41,7 +45,12 @@ public class ProducerController implements ProducerApi {
 
     //admin
     @Override
-    public ResponseEntity<PageResponseV1> findAll(String service, String action, Integer page, Integer size, String order, String sortBy) throws Exception {
+    public ResponseEntity<PageResponseV1> findAll(
+            String service,
+            String action,
+            Integer page, Integer size, String order,
+            String sortBy
+    ) throws Exception {
         Page<Producer> response = producerService.findAll(service, action, PageRequest.of(page, size, order, sortBy));
         return ResponseEntity.ok(PageResponse.toResponse(response, ProducerResponse::toV1));
     }

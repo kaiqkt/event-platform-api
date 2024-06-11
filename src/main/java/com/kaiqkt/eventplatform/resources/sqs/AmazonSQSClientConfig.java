@@ -24,14 +24,19 @@ public class AmazonSQSClientConfig {
 
     @Bean
     public AmazonSQSAsync amazonSQSAsync() {
+        AwsClientBuilder.EndpointConfiguration endpointConfiguration =
+                new AwsClientBuilder.EndpointConfiguration(awsProperties.endpoint(), awsProperties.region());
+        BasicAWSCredentials credentials = new BasicAWSCredentials(awsProperties.accessKey(), awsProperties.secretKey());
+        AWSStaticCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(credentials);
+
         return AmazonSQSAsyncClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(awsProperties.endpoint(), awsProperties.region()))
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(awsProperties.accessKey(), awsProperties.secretKey())))
+                .withEndpointConfiguration(endpointConfiguration)
+                .withCredentials(credentialsProvider)
                 .build();
     }
 
     @Bean
-    SQSConnectionFactory sqsConnectionFactory(AmazonSQSAsync amazonSQSAsync){
+    public SQSConnectionFactory sqsConnectionFactory(AmazonSQSAsync amazonSQSAsync) {
         return new SQSConnectionFactory(new ProviderConfiguration(), amazonSQSAsync);
     }
 }

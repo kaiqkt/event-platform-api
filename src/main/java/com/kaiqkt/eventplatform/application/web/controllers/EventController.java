@@ -1,4 +1,4 @@
-package com.kaiqkt.eventplatform.application.controllers;
+package com.kaiqkt.eventplatform.application.web.controllers;
 
 import com.kaiqkt.eventplatform.application.dto.request.EventRequest;
 import com.kaiqkt.eventplatform.domain.services.EventService;
@@ -19,7 +19,7 @@ public class EventController implements EventApi {
         this.eventService = eventService;
     }
 
-    //role service
+    //service
     @Override
     public ResponseEntity<Void> send(EventV1 eventV1) throws Exception {
         eventService.send(EventRequest.toDomain(eventV1));

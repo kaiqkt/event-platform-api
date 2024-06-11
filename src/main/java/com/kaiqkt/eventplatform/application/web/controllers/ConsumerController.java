@@ -27,14 +27,25 @@ public class ConsumerController implements ConsumerApi {
 
     //admin
     @Override
-    public ResponseEntity<ConsumerResponseV1> create(String service, String action, Integer version, ConsumerRequestV1 consumerRequestV1) throws Exception {
-        Consumer consumer = consumerService.create(ConsumerRequest.toDomain(consumerRequestV1), service, action, version);
+    public ResponseEntity<ConsumerResponseV1> create(
+            String service, String action,
+            Integer version,
+            ConsumerRequestV1 consumerRequestV1
+    ) throws Exception {
+        Consumer consumer = consumerService
+                .create(ConsumerRequest.toDomain(consumerRequestV1), service, action, version);
         return ResponseEntity.ok(ConsumerResponse.toV1(consumer));
     }
 
     //admin
     @Override
-    public ResponseEntity<PageResponseV1> findAll(String service, Integer page, Integer size, String order, String sortBy) throws Exception {
+    public ResponseEntity<PageResponseV1> findAll(
+            String service,
+            Integer page,
+            Integer size,
+            String order,
+            String sortBy
+    ) throws Exception {
         Page<Consumer> response = consumerService.findAll(service, PageRequest.of(page, size, order, sortBy));
         return ResponseEntity.ok(PageResponse.toResponse(response, ConsumerResponse::toV1));
     }

@@ -21,7 +21,6 @@ public class ProducerService {
 
     private static final Integer FIRST_VERSION = 1;
     private static final Logger log = LoggerFactory.getLogger(ProducerService.class);
-
     private final ProducerRepository producerRepository;
 
     @Autowired
@@ -51,7 +50,8 @@ public class ProducerService {
     }
 
     public Producer findByServiceAndAction(String service, String action) throws DomainException {
-        return producerRepository.findByServiceAndAction(service, action).orElseThrow(() -> new DomainException(ErrorType.PRODUCER_NOT_FOUND));
+        return producerRepository.findByServiceAndAction(service, action)
+                .orElseThrow(() -> new DomainException(ErrorType.PRODUCER_NOT_FOUND));
     }
 
     public Version findVersion(String service, String action, Integer version) throws DomainException {
@@ -62,11 +62,16 @@ public class ProducerService {
     }
 
     public Producer find(String service, String action, Integer version) throws DomainException {
-        return producerRepository.find(service, action, version).orElseThrow(() -> new DomainException(ErrorType.PRODUCER_NOT_FOUND));
+        return producerRepository.find(service, action, version)
+                .orElseThrow(() -> new DomainException(ErrorType.PRODUCER_NOT_FOUND));
     }
 
     private Producer update(Producer producer, Version version) throws DomainException {
-        Integer lastVersionValue = producer.getVersions().stream().map(Version::getValue).max(Integer::compareTo).orElse(0);
+        Integer lastVersionValue = producer.getVersions()
+                .stream()
+                .map(Version::getValue)
+                .max(Integer::compareTo).orElse(0);
+
         if (lastVersionValue + 1 != version.getValue()) {
             throw new DomainException(ErrorType.INVALID_VERSION.setMessage("The version must be sequential"));
         }
@@ -76,7 +81,9 @@ public class ProducerService {
         producer.setUpdatedAt(LocalDateTime.now());
 
         producerRepository.save(producer);
-        log.info("Producer service {} with action {} updated successfully", producer.getService(), producer.getAction());
+
+        log.info("Producer service {} with action {} updated successfully",
+                producer.getService(), producer.getAction());
 
         return producer;
     }
@@ -89,7 +96,9 @@ public class ProducerService {
         Producer producer = new Producer(service, action, version);
         version.setProducer(producer);
         producerRepository.save(producer);
-        log.info("Producer service {} with action {} created successfully", producer.getService(), producer.getAction());
+
+        log.info("Producer service {} with action {} created successfully",
+                producer.getService(), producer.getAction());
 
         return producer;
     }

@@ -11,6 +11,7 @@ import java.util.List;
 
 @Entity
 public class Producer {
+
     @Id
     private String id;
     private String service;
@@ -20,9 +21,9 @@ public class Producer {
     @OneToMany(mappedBy = "producer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Version> versions;
 
-    public Producer(){}
+    public Producer() { }
 
-    public Producer(String service, String action, Version version){
+    public Producer(String service, String action, Version version) {
         this.id = ULID.random();
         this.service = service;
         this.action = action;
@@ -81,13 +82,13 @@ public class Producer {
 
     @Override
     public String toString() {
-        return "Producer{" +
+        return "Producer { " +
                 "id='" + id + '\'' +
                 ", service='" + service + '\'' +
                 ", action='" + action + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", versions=" + versions +
-                '}';
+                " }";
     }
 }

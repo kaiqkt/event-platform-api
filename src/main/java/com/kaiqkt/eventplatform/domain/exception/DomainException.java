@@ -1,13 +1,8 @@
 package com.kaiqkt.eventplatform.domain.exception;
 
-import lombok.Getter;
-import lombok.Setter;
+public class DomainException extends Exception {
 
-@Setter
-public class DomainException extends Exception{
-
-    @Getter
-    private ErrorType type;
+    private final ErrorType type;
     private String message;
 
     public DomainException(ErrorType type) {
@@ -15,9 +10,7 @@ public class DomainException extends Exception{
         this.type = type;
     }
 
-    @Override
-    public String getMessage() {
-        return message;
+    public ErrorType getType() {
+        return type;
     }
-
 }

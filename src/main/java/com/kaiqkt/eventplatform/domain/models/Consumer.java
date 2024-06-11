@@ -20,7 +20,7 @@ public class Consumer {
     @JoinColumn(name = "version_id")
     private Version version;
 
-    public Consumer(){
+    public Consumer() {
         this.id = ULID.random();
     }
 

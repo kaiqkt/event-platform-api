@@ -20,20 +20,29 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ConsumerService {
+
     private final ProducerService producerService;
     private final ConsumerRepository consumerRepository;
     private final RequestService requestService;
-
     private static final Logger log = LoggerFactory.getLogger(ConsumerService.class);
 
     @Autowired
-    public ConsumerService(ProducerService producerService, ConsumerRepository consumerRepository, RequestService requestService) {
+    public ConsumerService(
+            ProducerService producerService,
+            ConsumerRepository consumerRepository,
+            RequestService requestService
+    ) {
         this.producerService = producerService;
         this.consumerRepository = consumerRepository;
         this.requestService = requestService;
     }
 
-    public Consumer create(Consumer consumer, String service, String action, Integer versionValue) throws DomainException {
+    public Consumer create(
+            Consumer consumer,
+            String service,
+            String action,
+            Integer versionValue
+    ) throws DomainException {
         if (consumerRepository.exists(consumer.getService(), service, action, versionValue)) {
             throw new DomainException(ErrorType.CONSUMER_ALREADY_EXISTS);
         }
@@ -47,7 +56,7 @@ public class ConsumerService {
         consumer.setVersion(version);
         consumerRepository.save(consumer);
 
-        log.info("Consumer {} from producer{} created successfully", consumer.getService(), service);
+        log.info("Consumer {} from producer {} created successfully", consumer.getService(), service);
 
         return consumer;
     }
@@ -55,7 +64,10 @@ public class ConsumerService {
     public void consume(Event event) {
         log.info("Consuming event {}", event.getId());
 
-        List<CompletableFuture<Void>> futures = consumerRepository.findAll(event.getService(), event.getAction(), event.getVersion())
+        List<CompletableFuture<Void>> futures = consumerRepository.findAll(
+                        event.getService(),
+                        event.getAction(),
+                        event.getVersion())
                 .stream()
                 .map(consumer -> CompletableFuture.runAsync(() -> processConsumer(consumer, event)))
                 .toList();
@@ -69,12 +81,11 @@ public class ConsumerService {
         return consumerRepository.findAll(service, pageable);
     }
 
-
     private void processConsumer(Consumer consumer, Event event) {
         try {
             requestService.request(consumer.getUrl(), consumer.getContentType(), event.getData());
         } catch (Exception e) {
-            log.error("Service {} fail to consume event: {}, error: {}", consumer.getService(), event, e.toString());
+            log.error("Service {} failed to consume event: {}, error: {}", consumer.getService(), event, e.toString());
         }
     }
 }

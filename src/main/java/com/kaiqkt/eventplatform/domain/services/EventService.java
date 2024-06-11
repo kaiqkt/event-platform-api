@@ -29,7 +29,6 @@ public class EventService {
     private final ObjectMapper mapper;
     private static final Logger log = LoggerFactory.getLogger(EventService.class);
 
-
     @Autowired
     public EventService(ProducerService producerService, MessagingService messagingService, ObjectMapper mapper) {
         this.producerService = producerService;

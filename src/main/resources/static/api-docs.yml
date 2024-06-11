@@ -22,79 +22,61 @@ paths:
       requestBody:
         required: true
         content:
-          application/vnd.event_create_producer_v1+json:
+          application/vnd.kaiqkt_producer_v1+json:
             schema:
               $ref: '#/components/schemas/ProducerRequestV1'
       responses:
         200:
           description: Producer created
           content:
-            application/vnd.event_create_producer_v1+json:
+            application/vnd.kaiqkt_producer_v1+json:
               schema:
                 $ref: '#/components/schemas/ProducerResponseV1'
-  /producer/{service}/{action}:
     get:
       tags:
         - producer
-      description: Get producer by service, action and version
-      operationId: findByServiceAndAction
+      description: Find all producers
+      operationId: findAll
       security:
         - JwtToken: []
       parameters:
-        - in: path
+        - in: query
           name: service
           schema:
             type: string
-          required: true
-        - in: path
+          required: false
+        - in: query
           name: action
           schema:
             type: string
-          required: true
-      responses:
-        200:
-          description: Producer found
-          content:
-            application/vnd.producer+json:
-              schema:
-                $ref: '#/components/schemas/ProducerResponseV1'
-        404:
-          description: Producer not found
-          content:
-            application/vnd.producer+json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ErrorV1'
-  /producer/{service}:
-    get:
-      tags:
-        - producer
-      description: Get producer by service
-      operationId: findByService
-      security:
-        - JwtToken: []
-      parameters:
-        - in: path
-          name: service
+          required: false
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: size
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: order
           schema:
             type: string
-          required: true
+          required: false
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+          required: false
       responses:
         200:
-          description: Producer found
+          description: Producers found
           content:
-            application/vnd.event_producer_v1+json:
+            application/vnd.kaiqkt_producer_v1+json:
               schema:
-                $ref: '#/components/schemas/ProducerResponseV1'
-        404:
-          description: Producer not found
-          content:
-            application/vnd.event_producer_v1+json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ErrorV1'
+                $ref: '#/components/schemas/PageResponseV1'
   /producer/{service}/{action}/{version}:
     delete:
       tags:
@@ -133,7 +115,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/vnd.event_create_event_v1+json:
+          application/vnd.kaiqkt_event_v1+json:
             schema:
               $ref: '#/components/schemas/EventV1'
       responses:
@@ -142,11 +124,52 @@ paths:
         404:
           description: Producer not found
           content:
-            application/vnd.event_create_event_v1+json:
+            application/vnd.kaiqkt_event_v1+json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/ErrorV1'
+  /consumer:
+    get:
+      tags:
+        - consumer
+      description: Find all consumers
+      operationId: findAll
+      security:
+        - JwtToken: []
+      parameters:
+        - in: query
+          name: service
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: size
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: order
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+          required: false
+      responses:
+        200:
+          description: Consumers found
+          content:
+            application/vnd.kaiqkt_consumer_v1+json:
+              schema:
+                $ref: '#/components/schemas/PageResponseV1'
   /consumer/{service}/{action}/{version}:
     post:
       tags:
@@ -174,47 +197,16 @@ paths:
       requestBody:
         required: true
         content:
-          application/vnd.event_create_consumer_v1+json:
+          application/vnd.kaiqkt_consumer_v1+json:
             schema:
               $ref: '#/components/schemas/ConsumerRequestV1'
       responses:
         200:
           description: Consumer created
           content:
-            application/vnd.event_create_consumer_v1+json:
+            application/vnd.kaiqkt_producer_v1+json:
               schema:
                 $ref: '#/components/schemas/ConsumerResponseV1'
-  /consumer/{service}:
-    get:
-      tags:
-        - consumer
-      description: Get consumer by service
-      operationId: findByService
-      security:
-        - JwtToken: []
-      parameters:
-        - in: path
-          name: service
-          schema:
-            type: string
-          required: true
-      responses:
-        200:
-          description: Consumer found
-          content:
-            application/vnd.event_consumer_v1+json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ConsumerResponseV1'
-        404:
-          description: Consumer not found
-          content:
-            application/vnd.event_consumer_v1+json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ErrorV1'
 
 components:
   schemas:
@@ -223,11 +215,14 @@ components:
       properties:
         service:
           type: string
+          example: "event-platform-api"
           x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
         action:
           type: string
+          example: "create"
           x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
         version:
+          example:
           allOf:
             - $ref: '#/components/schemas/VersionV1'
           x-field-extra-annotation: '@NotNull(message = "should not be null")'
@@ -241,11 +236,14 @@ components:
       properties:
         service:
           type: string
+          example: "consumer-api"
           x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
         url:
+          example: "http://localhost:8080/consumer"
           type: string
           x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
         content_type:
+          example: "application/json"
           type: string
           x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
       required:
@@ -256,18 +254,18 @@ components:
     ConsumerResponseV1:
       type: object
       properties:
-        id:
-          type: string
         service:
           type: string
+          example: "consumer-api"
         url:
           type: string
+          example: "http://localhost:8080/consumer"
         content_type:
           type: string
+          example: "application/json"
         version:
           $ref: '#/components/schemas/VersionV1'
       required:
-        - id
         - service
         - url
         - version
@@ -278,32 +276,42 @@ components:
       properties:
         service:
           type: string
+          example: "event-platform-api"
         action:
           type: string
+          example: "created"
         versions:
           type: array
-          x-field-extra-annotation: '@lombok.Builder.Default'
           items:
             $ref: '#/components/schemas/VersionV1'
+        created_at:
+          type: string
+        updated_at:
+          type: string
       required:
         - service
         - action
         - version
         - schema
+        - created_at
 
     EventV1:
       type: object
       properties:
         id:
           type: string
+          example: "01HZFNVG3C4WAKK3K8Q9TE49M8"
         service:
           type: string
+          example: "event-platform-api"
           x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
         action:
           type: string
+          example: "created"
           x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
         version:
           type: integer
+          example: 1
           x-field-extra-annotation:
             '@Min(value = 1, message = "number must be greater than zero")'
         data:
@@ -322,23 +330,49 @@ components:
       type: object
       properties:
         value:
+          example: 1
           type: integer
           x-field-extra-annotation:
             '@Min(value = 1, message = "number must be greater than zero")'
         schema:
+          example:
+            "{\"type\": \"object\", \"properties\":
+            {\"name\": {\"type\": \"string\"},
+             \"idade\": {\"type\": \"integer\", \"minimum\": 0}},
+              \"required\": [\"name\", \"idade\"]}"
           type: string
           x-field-extra-annotation: '@NotEmpty(message = "should not be empty")'
       required:
         - value
         - schema
 
+    PageResponseV1:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            type: object
+          example: ["element1", "element2"]
+        total_elements:
+          type: integer
+          example: 2
+        total_pages:
+          type: integer
+          example: 1
+        current_page:
+          type: integer
+          example: 0
+
     ErrorV1:
       type: object
       properties:
         type:
           type: string
+          example: "INVALID_PAYLOAD"
         message:
           type: object
+          example: "Invalid property 'name' with value 'null'"
       required:
         - type
         - message

@@ -77,8 +77,8 @@ public class ConsumerService {
         log.info("Event {} consumed successfully", event.getId());
     }
 
-    public Page<Consumer> findAll(String service, PageRequest pageable) {
-        return consumerRepository.findAll(service, pageable);
+    public Page<Consumer> findAll(String service, PageRequest pageRequest) {
+        return consumerRepository.findAll(service, pageRequest);
     }
 
     private void processConsumer(Consumer consumer, Event event) {

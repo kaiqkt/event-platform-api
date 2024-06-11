@@ -4,7 +4,7 @@ import com.kaiqkt.eventplatform.application.dto.request.ConsumerRequest;
 import com.kaiqkt.eventplatform.application.dto.response.ConsumerResponse;
 import com.kaiqkt.eventplatform.application.dto.response.PageResponse;
 import com.kaiqkt.eventplatform.domain.models.Consumer;
-import com.kaiqkt.eventplatform.application.dto.request.PageRequest;
+import com.kaiqkt.eventplatform.domain.utils.PageRequestBuilder;
 import com.kaiqkt.eventplatform.domain.services.ConsumerService;
 import com.kaiqkt.eventplatform.generated.application.controllers.ConsumerApi;
 import com.kaiqkt.eventplatform.generated.application.dto.ConsumerRequestV1;
@@ -12,8 +12,11 @@ import com.kaiqkt.eventplatform.generated.application.dto.ConsumerResponseV1;
 import com.kaiqkt.eventplatform.generated.application.dto.PageResponseV1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.kaiqkt.eventplatform.domain.utils.Constants.DEFAULT_SORT_PROPERTIES;
 
 @RestController
 public class ConsumerController implements ConsumerApi {
@@ -45,8 +48,9 @@ public class ConsumerController implements ConsumerApi {
             Integer size,
             String order,
             String sortBy
-    ) throws Exception {
-        Page<Consumer> response = consumerService.findAll(service, PageRequest.of(page, size, order, sortBy));
+    ) {
+        PageRequest pageRequest = PageRequestBuilder.build(page, size, order, sortBy, DEFAULT_SORT_PROPERTIES);
+        Page<Consumer> response = consumerService.findAll(service, pageRequest);
         return ResponseEntity.ok(PageResponse.toResponse(response, ConsumerResponse::toV1));
     }
 }

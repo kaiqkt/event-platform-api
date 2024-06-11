@@ -3,22 +3,6 @@ server:
   port: 8080
 
 spring:
-  kafka:
-    listener:
-      ack-mode: manual_immediate
-    consumer:
-      bootstrap-servers: localhost:9092
-      group-id: ep-1
-      auto-offset-reset: earliest
-      key-deserializer:
-        org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer:
-        org.apache.kafka.common.serialization.StringDeserializer
-      enable-auto-commit: false
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
   jpa:
     properties:
       hibernate:
@@ -29,6 +13,13 @@ spring:
     url: jdbc:postgresql://localhost:5432/event_platform
     username: event_platform
     password: mypwd
+
+aws:
+  region: us-east-1
+  access-key: 123secret
+  secret-key: 123secret
+  endpoint: http://localhost:4566
+  queue-name: event-platform
 
 management:
   endpoint:
@@ -41,8 +32,6 @@ management:
       base-path: /
       path-mapping:
         prometheus: /metrics
-
-event-topic: event_platform
 
 springtools:
   jwt-secret: world

@@ -1,25 +1,24 @@
 package com.kaiqkt.eventplatform.resources.exception;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Optional;
 
-@Slf4j
 public class UnexpectedResourceException extends Exception {
     private final String message;
 
     public UnexpectedResourceException(String message) {
         super(message);
         this.message = message;
-        log.error(getLoggedMessage());
+        LoggerFactory.getLogger(this.getClass()).error(getLoggedMessage());
     }
 
     private String sourceLocation() {
         Optional<StackTraceElement> stackElement = Arrays.stream(this.getStackTrace()).findFirst();
 
         return stackElement.map(stackTraceElement ->
-                String.format("%s:%d", stackTraceElement.getFileName(), stackTraceElement.getLineNumber()))
+                        String.format("%s:%d", stackTraceElement.getFileName(), stackTraceElement.getLineNumber()))
                 .orElse(null);
     }
 

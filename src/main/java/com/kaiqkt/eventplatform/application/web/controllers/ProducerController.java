@@ -3,7 +3,7 @@ package com.kaiqkt.eventplatform.application.web.controllers;
 import com.kaiqkt.eventplatform.application.dto.VersionDto;
 import com.kaiqkt.eventplatform.application.dto.response.PageResponse;
 import com.kaiqkt.eventplatform.application.dto.response.ProducerResponse;
-import com.kaiqkt.eventplatform.application.dto.request.PageRequest;
+import com.kaiqkt.eventplatform.domain.utils.PageRequestBuilder;
 import com.kaiqkt.eventplatform.domain.models.Producer;
 import com.kaiqkt.eventplatform.domain.services.ProducerService;
 import com.kaiqkt.eventplatform.generated.application.controllers.ProducerApi;
@@ -12,8 +12,11 @@ import com.kaiqkt.eventplatform.generated.application.dto.ProducerRequestV1;
 import com.kaiqkt.eventplatform.generated.application.dto.ProducerResponseV1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.kaiqkt.eventplatform.domain.utils.Constants.DEFAULT_SORT_PROPERTIES;
 
 @RestController
 public class ProducerController implements ProducerApi {
@@ -50,8 +53,9 @@ public class ProducerController implements ProducerApi {
             String action,
             Integer page, Integer size, String order,
             String sortBy
-    ) throws Exception {
-        Page<Producer> response = producerService.findAll(service, action, PageRequest.of(page, size, order, sortBy));
+    ) {
+        PageRequest pageRequest = PageRequestBuilder.build(page, size, order, sortBy, DEFAULT_SORT_PROPERTIES);
+        Page<Producer> response = producerService.findAll(service, action, pageRequest);
         return ResponseEntity.ok(PageResponse.toResponse(response, ProducerResponse::toV1));
     }
 }

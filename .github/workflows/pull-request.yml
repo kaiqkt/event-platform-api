@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check branch target
     steps:
-      - name: Get branch name and target
+      - name: check-branch-target
         id: get-branch-name-and-target
         run: |
           echo ::set-output name=BRANCH_NAME::${GITHUB_HEAD_REF}

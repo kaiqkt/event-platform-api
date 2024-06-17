@@ -17,14 +17,25 @@ springBoot {
     buildInfo()
 }
 
+def gprUser = project.findProperty("gpr.user") as String ?: System.getenv("GPR_USER")
+def gprKey = project.findProperty("gpr.key") as String ?: System.getenv("GPR_API_KEY")
+
+if (gprUser == null || gprUser.trim().isEmpty()) {
+    throw new GradleException("gpr.user is not set")
+}
+
+if (gprKey == null || gprKey.trim().isEmpty()) {
+    throw new GradleException("gpr.key is not set")
+}
+
 repositories {
     mavenCentral()
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/kaiqkt/*")
         credentials {
-            username = project.findProperty("gpr.user") as String ?: System.getenv("GPR_USER")
-            password = project.findProperty("gpr.key") as String ?: System.getenv("GPR_API_KEY")
+            username = gprUser
+            password = gprKey
         }
     }
 }

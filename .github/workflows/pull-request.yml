@@ -11,16 +11,28 @@ jobs:
       - name: Validate branch name
         run: |
           branch_name="${{ github.head_ref }}"
-          echo "pull request branch name: $branch_name"
+          target_branch_name="${{ github.base_ref }}"
+          echo "pull request branch name: $branch_name
+               to target branch name: $target_branch_name"
 
-          pattern="^(feature|release|hotfix)/[a-zA-Z0-9.-]+$"
-          if [[ ! $branch_name =~ $pattern ]]; then
-            echo "ERROR: The name of the branch is not in the correct format!"
-            echo -e "Branch names should have a prefix
-          (feature/, release/, hotfix/)and should be in kebab-case."
-            echo "Example: feature/create-endpoint"
-            exit 1
-          fi
+          release_pattern="^(release)/[0-9]+.[0-9]+$"
+          hotfix_pattern="^(hotfix)/[0-9]+.[0-9]+$"
+          feature_pattern="^(feature)/[0-9]+.[0-9]+$"
+
+          if [[ $branch_name =~ $feature_pattern ]]; then
+            echo "Feature branch detected
+            if [[ target_branch_name != "develop" ]]; then
+                echo "ERROR: Feature branches should be
+               created from the develop branch!"
+                exit 1
+            fi
+
+#          if [[ ! $branch_name =~ $pattern ]]; then
+#            echo "ERROR: The name of the branch is not in the correct format!"
+#            echo -e "Branch names should have a prefix
+#          (feature/, release/, hotfix/)and should be in kebab-case."
+#            echo "Example: feature/create-endpoint"
+#            exit 1
   test:
     runs-on: ubuntu-latest
     name: test

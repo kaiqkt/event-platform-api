@@ -29,7 +29,7 @@ jobs:
           fi
   test:
     runs-on: ubuntu-latest
-    name: test-pr
+    name: test
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 17
@@ -39,9 +39,6 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Generate open api spec
-        env:
-          GPR_USER: ${{ secrets.GPR_USER }}
-          GPR_API_KEY: ${{ secrets.GPR_API_KEY }}
         run: ./gradlew openApiGenerate
       - name: Run unit and component tests
         env:
@@ -50,7 +47,7 @@ jobs:
         run: ./gradlew test
   build:
     runs-on: ubuntu-latest
-    name: build-pr
+    name: build
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 17
@@ -61,9 +58,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Generate open api spec
-        env:
-          GPR_USER: ${{ secrets.GPR_USER }}
-          GPR_API_KEY: ${{ secrets.GPR_API_KEY }}
         run: ./gradlew openApiGenerate
       - name: Run unit and component tests
         run: ./gradlew build
+        env:
+          GPR_USER: ${{ secrets.GPR_USER }}
+          GPR_API_KEY: ${{ secrets.GPR_API_KEY }}

@@ -26,13 +26,7 @@ jobs:
                created from the develop branch!"
                 exit 1
             fi
-
-#          if [[ ! $branch_name =~ $pattern ]]; then
-#            echo "ERROR: The name of the branch is not in the correct format!"
-#            echo -e "Branch names should have a prefix
-#          (feature/, release/, hotfix/)and should be in kebab-case."
-#            echo "Example: feature/create-endpoint"
-#            exit 1
+          fi
   test:
     runs-on: ubuntu-latest
     name: test

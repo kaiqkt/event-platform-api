@@ -21,6 +21,7 @@ jobs:
           if [[ "$branch_name" =~ $feature_pattern ]]; then
             echo "Feature branch detected"
           fi
+        shell: bash
   test:
     runs-on: ubuntu-latest
     name: test

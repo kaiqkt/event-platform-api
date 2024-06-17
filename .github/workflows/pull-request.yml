@@ -24,6 +24,21 @@ jobs:
               echo "Feature branch must target develop"
               exit 1
             fi
+          elif [[ "$branch_name" =~ $release_pattern ]]; then
+            echo "Release branch detected"
+            if [[ "$target_branch_name" != "master" ]]; then
+              echo "Release branch must target master"
+              exit 1
+            fi
+          elif [[ "$branch_name" =~ $hotfix_pattern ]]; then
+            echo "Hotfix branch detected"
+            if [[ "$target_branch_name" != "master" ]]; then
+              echo "Hotfix branch must target master"
+              exit 1
+            fi
+          else
+            echo "Invalid branch name"
+            exit 1
           fi
         shell: bash
   test:

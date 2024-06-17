@@ -20,6 +20,10 @@ jobs:
 
           if [[ "$branch_name" =~ $feature_pattern ]]; then
             echo "Feature branch detected"
+            if [[ "$target_branch_name" != "develop" ]]; then
+              echo "Feature branch must target develop"
+              exit 1
+            fi
           fi
         shell: bash
   test:

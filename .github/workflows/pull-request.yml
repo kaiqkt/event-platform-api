@@ -12,8 +12,8 @@ jobs:
         run: |
           branch_name="${{ github.head_ref }}"
           echo "pull request branch name: $branch_name"
-
           pattern="^(feature|release|hotfix)/[a-zA-Z0-9.-]+$"
+
           if [[ ! $branch_name =~ $pattern ]]; then
             echo "ERROR: The name of the branch is not in the correct format!"
             echo -e "Branch names should have a prefix

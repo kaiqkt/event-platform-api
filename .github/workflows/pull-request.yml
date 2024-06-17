@@ -18,7 +18,7 @@ jobs:
           hotfix_pattern="^(hotfix)/[0-9]+.[0-9]+$"
           feature_pattern="^(feature)/[0-9]+.[0-9]+$"
 
-          if [[ $branch_name =~ $feature_pattern ]]; then
+          if [[ "$branch_name" =~ $feature_pattern ]]; then
             echo "Feature branch detected"
           fi
   test:

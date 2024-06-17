@@ -3,28 +3,21 @@
 on: [pull_request]
 
 jobs:
-  check-branch-target:
+  check-branch-name:
     runs-on: ubuntu-latest
-    name: Check branch target
     steps:
-      - name: check-branch-target
-        id: get-branch-name-and-target
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Validate branch name
         run: |
-          echo ::set-output name=BRANCH_NAME::${GITHUB_HEAD_REF}
-          echo ::set-output name=TARGET_BRANCH::${GITHUB_BASE_REF}
-      - name: Check branch target
-        run: |
-          BRANCH_NAME=
-          "${{ steps.get-branch-name-and-target.outputs.BRANCH_NAME }}"
-          TARGET_BRANCH=
-          "${{ steps.get-branch-name-and-target.outputs.TARGET_BRANCH }}"
-          if [[ "$BRANCH_NAME" =~ ^feature/ &&
-          "$TARGET_BRANCH" != "develop" ]]; then
-            echo "Feature branches can only be merged into develop"
-            exit 1
-          elif [[ "$BRANCH_NAME" =~ ^(hotfix|release)/
-          && "$TARGET_BRANCH" != "master" ]]; then
-            echo "Hotfix and release branches can only be merged into master"
+          branch_name="${GITHUB_REF#refs/heads/}"
+          pattern="^(feature|release|hotfix)/[a-z0-9-]+$"
+          if [[ ! $branch_name =~ $pattern ]]; then
+            echo "ERROR: The name of the branch is not in the correct format!"
+            echo -e "Branch names should have a prefix
+          (feature/, release/, hotfix/) and should be in kebab-case."
+            echo "Example: feature/create-endpoint"
             exit 1
           fi
   test:

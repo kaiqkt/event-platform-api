@@ -21,6 +21,8 @@ def gprUser = project.findProperty("gpr.user") as String ?: System.getenv("GPR_U
 def gprKey = project.findProperty("gpr.key") as String ?: System.getenv("GPR_API_KEY")
 
 if (gprUser == null || gprUser.trim().isEmpty()) {
+    println(System.getenv("GPR_USER"))
+    println(project.findProperty("gpr.user"))
     throw new GradleException("gpr.user is not set")
 }
 

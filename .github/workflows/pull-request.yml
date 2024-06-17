@@ -12,8 +12,7 @@ jobs:
         run: |
           branch_name="${{ github.head_ref }}"
           target_branch_name="${{ github.base_ref }}"
-          echo "pull request branch name: $branch_name
-          to target branch name: $target_branch_name"
+          echo "branch: $branch_name to target branch: $target_branch_name"
 
           release_pattern="^(release)/[0-9]+.[0-9]+$"
           hotfix_pattern="^(hotfix)/[0-9]+.[0-9]+$"
@@ -22,8 +21,7 @@ jobs:
           if [[ $branch_name =~ $feature_pattern ]]; then
             echo "Feature branch detected"
             if [[ $target_branch_name != "develop" ]]; then
-                echo "ERROR: Feature branches should
-          be created from the develop branch!"
+                echo "ERROR: feature can only be merged to develop"
                 exit 1
             fi
           fi

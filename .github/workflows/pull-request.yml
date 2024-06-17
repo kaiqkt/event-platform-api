@@ -8,14 +8,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Validate branch name
         run: |
           branch_name="${{ github.head_ref }}"
+          if [ -z "$branch_name" ]; then
+            branch_name="${GITHUB_REF#refs/heads/}"
+          fi
           pattern="^(feature|release|hotfix)/[a-z0-9-]+$"
           if [[ ! $branch_name =~ $pattern ]]; then
             echo "ERROR: The name of the branch is not in the correct format!"
             echo -e "Branch names should have a prefix
-          (feature/, release/, hotfix/)and should be in kebab-case."
+          (feature/, release/, hotfix/)\nand should be in kebab-case."
             echo "Example: feature/create-endpoint"
             exit 1
           fi

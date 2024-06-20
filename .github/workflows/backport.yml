@@ -25,7 +25,3 @@ jobs:
           draft: false
           labels: "backport"
           commit-message: "Sync `develop` with `master`"
-
-      - name: Check output
-        run: echo "Pull Request Number -
-          ${{ steps.cpr.outputs.pull-request-number }}"

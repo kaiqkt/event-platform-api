@@ -13,21 +13,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: create pull request
+      - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: develop
-          head: master
           title: "backport"
-          body: "# Backport Pull Request\nThis is a backport pull request
-          to sync `develop` with `master`."
+          body: "# Backport Pull Request\nThis
+          is a backport pull request to sync `develop` with `master`."
           draft: false
           labels: "backport"
           commit-message: "Sync `develop` with `master`"
-          auto-merge: true
 
       - name: Check output
-        run: echo "Pull Request Number
-          - ${{ steps.cpr.outputs.pull-request-number }}"
+        run: echo "Pull Request Number -
+          ${{ steps.cpr.outputs.pull-request-number }}"

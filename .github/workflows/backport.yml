@@ -15,7 +15,8 @@ jobs:
 
       - name: create pull request
         run:
-          gh pr create -B develop -H master --title "backport"
+          timestamp=$(date +%Y%m%d%H%M%S)
+          gh pr create -B develop -H master --title "backport/$timestamp"
           --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

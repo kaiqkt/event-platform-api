@@ -1,8 +1,13 @@
 ---
 
-name: Pull request
+name: pull request
 
-on: [pull_request]
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   check-branch-name:
@@ -38,6 +43,8 @@ jobs:
               echo "Hotfix branch must target master"
               exit 1
             fi
+          elif [[ "$branch_name" =~ master ]]; then
+            echo "Backport detected"
           else
             echo "Invalid branch name"
             exit 1

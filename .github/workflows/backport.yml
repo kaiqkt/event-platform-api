@@ -1,5 +1,5 @@
 ---
-name: Backport
+name: backport
 
 on:
   push:
@@ -14,9 +14,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: create pull request
-        run:
-          timestamp=$(date +%Y%m%d%H%M%S)
-          gh pr create -B develop -H master --title "backport/$timestamp"
-          --body 'Created by Github action'
+        run: |
+          gh pr create -B develop -H master --title "backport" --body "
+          # Backport Pull Request
+          This is a backport pull request to sync \`develop\` with \`master\`.
+          Close and reopen the pr to run the actions:
+          https://github.com/peter-evans/create-pull-request
+          "
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,6 +1,5 @@
 ---
-
-name: Backport para develop
+name: Backport
 
 on:
   push:
@@ -11,6 +10,9 @@ jobs:
   backport:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: create pull request
         run: gh pr create -B master -H develop --title 'Backport'
           --body 'Created by Github action'

@@ -1,8 +1,17 @@
 ---
 
-name: Pull request
+name: pull request
 
-on: [pull_request]
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+  workflow_run:
+    workflows: ["backport"]
+    types:
+      - completed
 
 jobs:
   check-branch-name:

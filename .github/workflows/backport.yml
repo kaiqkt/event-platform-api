@@ -14,10 +14,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: create pull request
-        run: |
-          timestamp=$(date +%Y%m%d%H%M%S)
-          gh pr create -B develop -H master --title "backport/$timestamp"
+        run:
+          gh pr create -B develop -H master --title "backport"
           --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash

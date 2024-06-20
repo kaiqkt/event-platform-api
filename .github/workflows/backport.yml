@@ -1,6 +1,6 @@
 ---
 
-name: Backport to develop
+name: Backport para develop
 
 on:
   push:
@@ -11,16 +11,16 @@ jobs:
   backport:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout do código
         uses: actions/checkout@v2
         with:
           ref: master
 
-      - name: Create Pull Request
+      - name: Criar Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: master
+          base: develop
           branch: 'backport/${{ github.run_id }}'
-          title: 'Backport changes to develop'
-          body: 'This PR backports changes from master to develop.'
+          title: 'Backport de alterações para develop'
+          body: 'Este PR faz o backport de alterações da master para develop.'

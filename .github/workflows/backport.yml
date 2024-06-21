@@ -13,15 +13,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: develop
-          title: "backport"
-          body: "# Backport Pull Request\nThis
-          is a backport pull request to sync `develop` with `master`."
-          draft: false
-          labels: "backport"
-          commit-message: "Sync `develop` with `master`"
+      - name: create pull request
+        run:
+          gh pr create -B develop -H master --title "backport"
+          --body 'Created by Github action'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -19,3 +19,9 @@ jobs:
           --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Rebase develop branch
+        run: |
+          git fetch origin develop:develop
+          git rebase origin/master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

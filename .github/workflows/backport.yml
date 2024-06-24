@@ -19,16 +19,16 @@ jobs:
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
 
-      - name: Create a new branch with timestamp
+      - name: Create a new branch
         run: |
           git checkout -b backport
 
-#      - name: Rebase master onto backport branch
-#        run: |
-#          git rebase master
-#
-#      - name: Checkout develop and merge backport branch into develop
-#        run: |
-#          git checkout develop
-#          git merge --no-ff backport/$TIMESTAMP
-#          git push origin develop
+      - name: Rebase master onto backport branch
+        run: |
+          git rebase master
+
+      - name: Checkout develop and merge backport branch into develop
+        run: |
+          git checkout develop
+          git merge --no-ff backport/$TIMESTAMP
+          git push origin develop

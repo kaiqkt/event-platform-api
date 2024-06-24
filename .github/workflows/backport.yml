@@ -21,7 +21,7 @@ jobs:
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
 
-      - name: Create a new branch with timestamp
+      - name: Create a new branch
         run: |
           git checkout -b backport
 
@@ -38,8 +38,12 @@ jobs:
           pr_title: "Sync develop with master"
           pr_body: "Update develop with the latest changes from master."
 
-      - name: Rebase develop onto backport branch
-        run: |
-          git checkout develop
-          git rebase backport
-          git push origin develop
+      - name: Automerge
+        uses: pascalgn/automerge-action@v0.14.3
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_LABELS: "automerge,!work in progress"
+          MERGE_METHOD: "merge"
+          MERGE_COMMIT_MESSAGE: "Automatic merge of pull request"
+          MERGE_FORKS: "false"
+          UPDATE_LABELS: ""

@@ -38,13 +38,8 @@ jobs:
           pr_title: "Sync develop with master"
           pr_body: "Update develop with the latest changes from master."
 
-      - name: Merge Pull Request
-        uses: pascalgn/automerge-action@v0.13.0
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          MERGE_LABELS: "automerge,!work in progress"
-          MERGE_METHOD: "merge"
-          MERGE_COMMIT_MESSAGE: "Merge pull request ({{pullRequest.number}})
-           for ({{pullRequest.title}})"
-          MERGE_FORKS: "false"
-          UPDATE_LABELS: ""
+      - name: Rebase develop onto backport branch
+        run: |
+          git checkout develop
+          git rebase backport/$TIMESTAMP
+          git push origin develop

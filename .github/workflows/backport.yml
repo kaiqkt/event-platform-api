@@ -41,5 +41,5 @@ jobs:
       - name: Rebase develop onto backport branch
         run: |
           git checkout develop
-          git rebase backport/$TIMESTAMP
+          git rebase backport
           git push origin develop

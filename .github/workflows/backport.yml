@@ -21,8 +21,7 @@ jobs:
 
       - name: Create a new branch with timestamp
         run: |
-          echo "TIMESTAMP=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
-          git checkout -b backport/$TIMESTAMP
+          git checkout -b backport
 
 #      - name: Rebase master onto backport branch
 #        run: |

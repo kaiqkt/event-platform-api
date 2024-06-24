@@ -24,12 +24,12 @@ jobs:
           TIMESTAMP=$(date +%Y%m%d%H%M%S)
           git checkout -b backport/$TIMESTAMP
 
-      - name: Rebase master onto backport branch
-        run: |
-          git rebase master
-
-      - name: Checkout develop and merge backport branch into develop
-        run: |
-          git checkout develop
-          git merge --no-ff backport/$TIMESTAMP
-          git push origin develop
+#      - name: Rebase master onto backport branch
+#        run: |
+#          git rebase master
+#
+#      - name: Checkout develop and merge backport branch into develop
+#        run: |
+#          git checkout develop
+#          git merge --no-ff backport/$TIMESTAMP
+#          git push origin develop

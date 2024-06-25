@@ -37,13 +37,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           pr_title: "Sync develop with master"
           pr_body: "Update develop with the latest changes from master."
-
-      - name: Automerge
-        uses: pascalgn/automerge-action@v0.14.3
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          MERGE_LABELS: "automerge,!work in progress"
-          MERGE_METHOD: "merge"
-          MERGE_COMMIT_MESSAGE: "Automatic merge of pull request"
-          MERGE_FORKS: "false"
-          UPDATE_LABELS: ""

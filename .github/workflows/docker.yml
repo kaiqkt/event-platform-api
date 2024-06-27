@@ -10,7 +10,7 @@ on:
       - synchronize
 
 jobs:
-  check-branch-name:
+  build-version:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

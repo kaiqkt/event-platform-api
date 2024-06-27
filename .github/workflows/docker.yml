@@ -67,8 +67,12 @@ jobs:
             rc_number=0
           fi
 
+          echo "RC number before increment: $rc_number"
+
           # Increment rc number by 1
           rc_number=$((rc_number + 1))
+
+          echo "RC number after increment: $rc_number"
 
           # Create rc string
           rc_string="rc-$rc_number"
@@ -78,8 +82,8 @@ jobs:
           echo "version=$version" >> $GITHUB_ENV
           echo "rc_string=$rc_string" >> $GITHUB_ENV
 
-          # Update RC_NUMBER cache file
-          echo $rc_number > ~/.rc_number
+          echo "Contents of cache file after update:"
+          cat ~/.rc_number
 
           echo "$version-$rc_string"
         shell: bash

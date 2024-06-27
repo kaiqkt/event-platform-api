@@ -45,10 +45,33 @@ jobs:
           fi
         shell: bash
 
-      - name: Extract version from branch name
+      - name: Extract version from branch name and create rc string
         id: extract_version
         run: |
           branch="${{ github.head_ref }}"
-          echo "$branch"
-          echo "::set-output name=$branch::$branch-rc-1"
+          version=${branch//release\//}
+          version=${version//hotfix\//}
+          echo "Version: $version"
+
+          # Get current rc number from environment variable
+          rc_number=${{ env.RC_NUMBER }}
+
+          # If RC_NUMBER is not set, initialize it to 1
+          if [ -z "$rc_number" ]; then
+            rc_number=1
+          else
+            # Increment rc number by 1
+            rc_number=$((rc_number + 1))
+          fi
+
+          # Create rc string
+          rc_string="rc-$rc_number"
+          echo "RC string: $rc_string"
+
+          # Set output variables
+          echo "::set-output name=version::$version"
+          echo "::set-output name=rc_string::$rc_string"
+
+          # Update RC_NUMBER environment variable
+          echo "RC_NUMBER=$rc_number" >> $GITHUB_ENV
         shell: bash

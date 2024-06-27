@@ -6,7 +6,9 @@ on:
     branches:
       - release/*
       - hotfix/*
-    types: [opened, synchronize]
+    types:
+      - opened
+      - synchronize
 
 jobs:
   create_and_increment_tag:

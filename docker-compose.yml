@@ -1,13 +1,15 @@
 ---
 services:
-#  event-platform-api:
-#    container_name: event-platform-api
-#    build:
-#      dockerfile: Dockerfile
-#    image: event-platform-api:latest
-#    restart: always
-#    ports:
-#      - "8080:8080"
+  event-platform-api:
+    container_name: event-platform-api
+    restart: always
+    build:
+      dockerfile: Dockerfile
+    image: event-platform-api:latest
+    environment:
+      PROFILE: local
+    ports:
+      - "8080:8080"
   postgres:
     container_name: postgres
     image: postgres:latest

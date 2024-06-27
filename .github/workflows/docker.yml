@@ -1,0 +1,25 @@
+---
+name: PR on release/hotfix branches
+
+on:
+  pull_request:
+    branches:
+      - 'release/*'
+      - 'hotfix/*'
+    types: [opened, synchronize]
+
+jobs:
+  create_and_increment_tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Bump version and push tag
+        id: bump_version
+        uses: mathieudutour/github-tag-action@v5.6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: prerelease
+          tag_prefix: ""
+          release_branches: release/*,hotfix/*
+          pre_release: true

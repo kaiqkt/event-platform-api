@@ -48,8 +48,7 @@ jobs:
       - name: Extract version from branch name
         id: extract_version
         run: |
-          branch_name="${{ github.head_ref }}"
-          echo "branch: $branch_name"
-          version="${BASH_REMATCH[1]}"
-          echo "::set-output name=version::$version-rc-1"
+          branch="${{ github.head_ref }}"
+          echo "$branch"
+          echo "::set-output name=$branch::$branch-rc-1"
         shell: bash

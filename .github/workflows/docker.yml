@@ -61,6 +61,6 @@ jobs:
           version_pattern="release/(.*)"
           if [[ "$branch_name" =~ $version_pattern ]]; then
             version="${BASH_REMATCH[1]}"
-            echo "::set-output name=version::$version-rc-0"
+            echo "::set-output name=version::$version-rc-1"
           fi
         shell: bash

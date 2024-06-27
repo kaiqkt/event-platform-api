@@ -63,6 +63,7 @@ jobs:
           # Get current rc number from cache file
           if [ -f ~/.rc_number ]; then
             rc_number=$(cat ~/.rc_number)
+            echo "RC number from cache file: $rc_number"
           else
             rc_number=0
           fi

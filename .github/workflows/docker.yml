@@ -51,7 +51,6 @@ jobs:
           branch="${{ github.head_ref }}"
           version=${branch//release\//}
           version=${version//hotfix\//}
-          echo "Version: $version"
 
           # Get current rc number from environment variable
           rc_number=${{ env.RC_NUMBER }}
@@ -66,7 +65,6 @@ jobs:
 
           # Create rc string
           rc_string="rc-$rc_number"
-          echo "RC string: $rc_string"
 
           # Set output variables using environment files
           echo "version=$version" >> $GITHUB_ENV
@@ -74,4 +72,6 @@ jobs:
 
           # Update RC_NUMBER environment variable
           echo "RC_NUMBER=$rc_number" >> $GITHUB_ENV
+
+          echo "$version-$rc_string"
         shell: bash

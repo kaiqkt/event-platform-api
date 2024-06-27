@@ -45,13 +45,6 @@ jobs:
           fi
         shell: bash
 
-      - name: Cache RC number
-        uses: actions/cache@v2
-        id: cache
-        with:
-          path: ~/.rc_number
-          key: ${{ github.head_ref }}
-
       - name: Extract version from branch name and create rc string
         id: extract_version
         run: |
@@ -60,18 +53,12 @@ jobs:
           version=${version//hotfix\//}
           echo "Version: $version"
 
-          # Get current rc number from cache file
-          if [ -f ~/.rc_number ]; then
-            rc_number=$(cat ~/.rc_number)
-          else
-            rc_number=0
-          fi
-
-          # Increment rc number by 1
-          rc_number=$((rc_number + 1))
+          # Create timestamp
+          timestamp=$(date +%m%d%H%M%S)
 
           # Create rc string
-          rc_string="rc-$rc_number"
+          rc_string="rc-$timestamp"
+          echo "RC string: $rc_string"
 
           # Set output variables using environment files
           echo "version=$version" >> $GITHUB_ENV

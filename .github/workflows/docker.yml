@@ -64,7 +64,7 @@ jobs:
           if [ -f ~/.rc_number ]; then
             rc_number=$(cat ~/.rc_number)
           else
-            rc_number=1
+            rc_number=0
           fi
 
           # Increment rc number by 1

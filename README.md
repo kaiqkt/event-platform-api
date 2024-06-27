@@ -1,4 +1,5 @@
 # Event Platform Api
+
 ## Description
 
 The application allows for the creation of two types of users: Producers and Consumers. Producers are the entities that create events. They have the ability to send events to the platform. On the other hand, Consumers, as the name suggests, are the entities that consume these events.

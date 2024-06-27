@@ -63,28 +63,19 @@ jobs:
           # Get current rc number from cache file
           if [ -f ~/.rc_number ]; then
             rc_number=$(cat ~/.rc_number)
-            echo "RC number from cache file: $rc_number"
           else
             rc_number=0
           fi
 
-          echo "RC number before increment: $rc_number"
-
           # Increment rc number by 1
           rc_number=$((rc_number + 1))
 
-          echo "RC number after increment: $rc_number"
-
           # Create rc string
           rc_string="rc-$rc_number"
-          echo "RC string: $rc_string"
 
           # Set output variables using environment files
           echo "version=$version" >> $GITHUB_ENV
           echo "rc_string=$rc_string" >> $GITHUB_ENV
-
-          echo "Contents of cache file after update:"
-          cat ~/.rc_number
 
           echo "$version-$rc_string"
         shell: bash

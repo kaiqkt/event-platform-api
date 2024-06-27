@@ -68,9 +68,9 @@ jobs:
           rc_string="rc-$rc_number"
           echo "RC string: $rc_string"
 
-          # Set output variables
-          echo "::set-output name=version::$version"
-          echo "::set-output name=rc_string::$rc_string"
+          # Set output variables using environment files
+          echo "version=$version" >> $GITHUB_ENV
+          echo "rc_string=$rc_string" >> $GITHUB_ENV
 
           # Update RC_NUMBER environment variable
           echo "RC_NUMBER=$rc_number" >> $GITHUB_ENV

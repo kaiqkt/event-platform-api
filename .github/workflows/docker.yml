@@ -4,8 +4,7 @@ name: Creating release/hotfix tag
 on:
   pull_request:
     branches:
-      - release/*
-      - hotfix/*
+      - master
     types:
       - opened
       - synchronize

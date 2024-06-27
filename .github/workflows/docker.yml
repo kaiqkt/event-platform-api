@@ -14,7 +14,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Bump version and push tag
         id: bump_version
         uses: mathieudutour/github-tag-action@v5.6

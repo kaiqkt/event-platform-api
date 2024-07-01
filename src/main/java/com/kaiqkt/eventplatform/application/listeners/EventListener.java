@@ -1,4 +1,4 @@
-package com.kaiqkt.eventplatform.application.web.listeners;
+package com.kaiqkt.eventplatform.application.listeners;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kaiqkt.eventplatform.application.config.ObjectMapperConfig;

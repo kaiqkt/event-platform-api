@@ -8,7 +8,7 @@ on:
     types:
       - opened
       - synchronize
-
+      -
 jobs:
   build-version:
     runs-on: ubuntu-latest
@@ -57,12 +57,6 @@ jobs:
           timestamp=$(date +%m%d%H%M%S)
 
           # Create rc string
-          rc_string="rc-$timestamp"
-          echo "RC string: $rc_string"
-
-          # Set output variables using environment files
-          echo "version=$version" >> $GITHUB_ENV
-          echo "rc_string=$rc_string" >> $GITHUB_ENV
-
-          echo "$version-$rc_string"
+          rc_string="$version-rc-$timestamp"
+          echo "RC version: $rc_string"
         shell: bash

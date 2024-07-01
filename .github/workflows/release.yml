@@ -1,0 +1,54 @@
+---
+name: Creating release/hotfix tag
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Validate branch name
+        run: |
+          branch_name="${{ github.head_ref }}"
+          target_branch_name="${{ github.base_ref }}"
+          echo "branch: $branch_name to target branch: $target_branch_name"
+
+          release_pattern="^(release)/[0-9]+.[0-9]+.[0-9]+$"
+          hotfix_pattern="^(hotfix)/[0-9]+.[0-9]+.[0-9]+$"
+
+          if [[ "$branch_name" =~ $release_pattern ]]; then
+            echo "Release branch detected"
+            if [[ "$target_branch_name" != "master" ]]; then
+              echo "Release branch must target master"
+              exit 1
+            fi
+          elif [[ "$branch_name" =~ $hotfix_pattern ]]; then
+            echo "Hotfix branch detected"
+            if [[ "$target_branch_name" != "master" ]]; then
+              echo "Hotfix branch must target master"
+              exit 1
+            fi
+          else
+            echo "Invalid branch name"
+            exit 1
+          fi
+        shell: bash
+
+      - name: Extract version from branch name and create rc string
+        id: extract_version
+        run: |
+          branch="${{ github.head_ref }}"
+          version=${branch//release\//}
+          version=${version//hotfix\//}
+          echo "Version: $version"
+
+          echo "RC version: $version"
+        shell: bash

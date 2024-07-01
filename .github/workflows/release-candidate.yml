@@ -18,33 +18,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate branch name
-        run: |
-          branch_name="${{ github.head_ref }}"
-          target_branch_name="${{ github.base_ref }}"
-          echo "branch: $branch_name to target branch: $target_branch_name"
-
-          release_pattern="^(release)/[0-9]+.[0-9]+.[0-9]+$"
-          hotfix_pattern="^(hotfix)/[0-9]+.[0-9]+.[0-9]+$"
-
-          if [[ "$branch_name" =~ $release_pattern ]]; then
-            echo "Release branch detected"
-            if [[ "$target_branch_name" != "master" ]]; then
-              echo "Release branch must target master"
-              exit 1
-            fi
-          elif [[ "$branch_name" =~ $hotfix_pattern ]]; then
-            echo "Hotfix branch detected"
-            if [[ "$target_branch_name" != "master" ]]; then
-              echo "Hotfix branch must target master"
-              exit 1
-            fi
-          else
-            echo "Invalid branch name"
-            exit 1
-          fi
-        shell: bash
-
       - name: Extract version from branch name and create rc string
         id: extract_version
         run: |
@@ -52,6 +25,12 @@ jobs:
           version=${branch//release\//}
           version=${version//hotfix\//}
           echo "Version: $version"
+
+          # Validate version
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version: $version"
+            exit 1
+          fi
 
           # Create timestamp
           timestamp=$(date +%m%d%H%M%S)
@@ -64,26 +43,30 @@ jobs:
           echo "::set-output name=version::$version"
         shell: bash
 
-      - name: Extract Metadata
-        uses: docker/metadata-action@v5
-        id: meta
-        with:
-          images: |
-            ${{secrets.DOCKERHUB_USERNAME}}/${{secrets.DH_REPO_NAME}}
-          tags: |
-            type=semver,pattern=${{ steps.extract_version.outputs.version }}
+      - name: Use version
+        run: echo "The version is ${{ steps.extract_version.outputs.version }}"
+        shell: bash
 
-
-      - name: Docker Login
-        uses: docker/login-action@v2
-        with:
-          username: ${{secrets.DOCKERHUB_USERNAME}}
-          password: ${{secrets.DOCKERHUB_TOKEN}}
-          logout: true
-
-      - name: Build And Push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+#      - name: Extract Metadata
+#        uses: docker/metadata-action@v5
+#        id: meta
+#        with:
+#          images: |
+#            ${{secrets.DOCKERHUB_USERNAME}}/${{secrets.DH_REPO_NAME}}
+#          tags: |
+#            type=semver,pattern=${{ steps.extract_version.outputs.version }}
+#
+#
+#      - name: Docker Login
+#        uses: docker/login-action@v2
+#        with:
+#          username: ${{secrets.DOCKERHUB_USERNAME}}
+#          password: ${{secrets.DOCKERHUB_TOKEN}}
+#          logout: true
+#
+#      - name: Build And Push
+#        uses: docker/build-push-action@v5
+#        with:
+#          context: .
+#          push: true
+#          tags: ${{ steps.meta.outputs.tags }}

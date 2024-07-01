@@ -1,5 +1,5 @@
 ---
-name: Creating release/hotfix tag
+name: Creating release/hotfix candidate tag
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
     types:
       - opened
       - synchronize
-      -
+
 jobs:
   build-version:
     runs-on: ubuntu-latest

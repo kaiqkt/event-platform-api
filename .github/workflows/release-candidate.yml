@@ -40,7 +40,7 @@ jobs:
           echo "RC version: $rc_string"
 
           # Set output for the version
-          echo "::set-output name=version::$version"
+          echo "::set-output name=version::$rc_string"
         shell: bash
 
       - name: Use version

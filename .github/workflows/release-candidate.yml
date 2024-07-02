@@ -59,13 +59,33 @@ jobs:
           GPR_USER: ${{ secrets.GPR_USER }}
           GPR_API_KEY: ${{ secrets.GPR_API_KEY }}
 
+      - name: Configure Git
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+
+      - name: Create comment
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const issue_number = context.payload.pull_request.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const body = "The version ${{ steps.extract_version.outputs.version }} is being created. ⌛";
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number,
+              body
+            });
+
       - name: Create Tag
         id: create_tag
         run: |
-          git tag -a $rc_string -m "version $rc_string"
+          git tag -a ${{ steps.extract_version.outputs.version }} -m "version ${{ steps.extract_version.outputs.version }}"
 
       - name: Push Tag
-        run: git push origin ${{ steps.create_tag.outputs.version }}
+        run: git push origin ${{ steps.extract_version.outputs.version }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1

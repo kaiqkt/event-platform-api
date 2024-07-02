@@ -3,14 +3,13 @@ name: Creating release/hotfix candidate tag
 
 on:
   pull_request:
-    branches:
-      - master
     types:
       - opened
       - synchronize
 
 jobs:
   build-version:
+    if: github.event.pull_request.base.ref == 'master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

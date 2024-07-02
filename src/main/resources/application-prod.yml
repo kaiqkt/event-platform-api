@@ -1,0 +1,44 @@
+---
+server:
+  port: 8080
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+aws:
+  region: ${AWS_REGION}
+  access-key: ${AWS_ACCESS_KEY}
+  secret-key: ${AWS_SECRET_KEY}
+  endpoint: ${AWS_ENDPOINT}
+  queue-name: ${AWS_QUEUE_NAME}
+
+springtools:
+  jwt-secret: ${JWT_SECRET}
+  access-token: ${ACCESS_TOKEN}
+
+management:
+  endpoint:
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+      base-path: /
+      path-mapping:
+        prometheus: /metrics
+
+springdoc:
+  api-docs:
+    path: /api-docs.yml
+  swagger-ui:
+    path: /docs

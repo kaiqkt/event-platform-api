@@ -1,15 +1,33 @@
 ---
 services:
   event-platform-api:
+    depends_on:
+      - postgres
+      - localstack
     container_name: event-platform-api
     restart: always
     build:
       dockerfile: Dockerfile
     image: event-platform-api:latest
     environment:
-      PROFILE: local
+      PROFILE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/event_platform
+      SPRING_DATASOURCE_USERNAME: event_platform
+      SPRING_DATASOURCE_PASSWORD: mypwd
+      JWT_SECRET: world
+      ACCESS_TOKEN: world
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY: 123secret
+      AWS_SECRET_KEY: 123secret
+      AWS_ENDPOINT: http://localstack:4566
+      AWS_QUEUE_NAME: event-platform
+    dns:
+      - 10.0.2.20
     ports:
       - "8080:8080"
+    networks:
+      - ls
+
   postgres:
     container_name: postgres
     image: postgres:latest
@@ -18,29 +36,35 @@ services:
       POSTGRES_USER: event_platform
       POSTGRES_PASSWORD: mypwd
       POSTGRES_DB: event_platform
-    ports:
-      - '5432:5432'
-    volumes:
-      - postgres:/var/lib/postgresql/data
+    networks:
+      - ls
+
   localstack:
     container_name: localstack
-    ports:
-      - "4566:4566"
     image: localstack/localstack
+    restart: always
     environment:
       - SERVICES=sqs
       - AWS_DEFAULT_REGION=us-east-1
       - AWS_SECRET_ACCESS_KEY=123secret
       - AWS_ACCESS_KEY_ID=123secret
-      - DEBUG=1
-    command: sh ./local/localstack/init-localstack.sh
+      - DEBUG=${DEBUG:-0}
     volumes:
       - ./local/localstack:/etc/localstack/init/ready.d
       - ./local/localstack/storage:/var/lib/localstack
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      ls:
+        ipv4_address: 10.0.2.20
 
 volumes:
   postgres:
     driver: local
   localstack:
     driver: local
+
+networks:
+  ls:
+    ipam:
+      config:
+        - subnet: 10.0.2.0/24
